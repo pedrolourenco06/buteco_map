@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comida di Buteco BH 2025 · Mapa dos Botecos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --verde:     #1a5c1a;
+      --verde-claro: #2d8a2d;
+      --amarelo:   #f5c400;
+      --laranja:   #e8591a;
+      --creme:     #faf6ee;
+      --escuro:    #1a1208;
+      --cinza:     #5a5040;
+      --card-bg:   rgba(250, 246, 238, 0.97);
+      --sombra:    0 8px 40px rgba(26,18,8,0.22);
+      --radius:    14px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--escuro);
+      color: var(--escuro);
+      overflow: hidden;
+    }
+
+    /* ── HEADER ── */
+    #header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 64px;
+      background: var(--verde);
+      border-bottom: 3px solid var(--amarelo);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    }
+
+    #header .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #header .logo-icon {
+      width: 38px; height: 38px;
+      background: var(--amarelo);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    #header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      color: #fff;
+      letter-spacing: 1.5px;
+      line-height: 1;
+    }
+
+    #header h1 span {
+      color: var(--amarelo);
+    }
+
+    #header .badge {
+      background: var(--amarelo);
+      color: var(--escuro);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    #header .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #header .count-badge {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    #header .count-badge strong {
+      color: var(--amarelo);
+      font-size: 16px;
+    }
+
+    /* ── SIDEBAR ── */
+    #sidebar {
+      position: fixed;
+      top: 64px; left: 0; bottom: 0;
+      width: 340px;
+      z-index: 900;
+      background: var(--creme);
+      border-right: 2px solid rgba(26,92,26,0.12);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+    }
+
+    #sidebar.collapsed {
+      transform: translateX(-340px);
+    }
+
+    .sidebar-toggle {
+      position: fixed;
+      top: 80px;
+      left: 340px;
+      z-index: 950;
+      width: 28px; height: 56px;
+      background: var(--verde);
+      border: none;
+      cursor: pointer;
+      border-radius: 0 8px 8px 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: left 0.3s cubic-bezier(.4,0,.2,1), background 0.2s;
+      box-shadow: 3px 0 12px rgba(0,0,0,0.2);
+    }
+
+    .sidebar-toggle:hover { background: var(--verde-claro); }
+
+    #sidebar.collapsed ~ .sidebar-toggle {
+      left: 0;
+    }
+
+    .sidebar-toggle svg {
+      width: 14px; height: 14px;
+      fill: #fff;
+      transition: transform 0.3s;
+    }
+
+    #sidebar.collapsed ~ .sidebar-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    /* Search */
+    .search-box {
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid rgba(26,92,26,0.1);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid rgba(26,92,26,0.2);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      background: #fff;
+      color: var(--escuro);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--verde);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 4px 10px;
+      border: 1.5px solid rgba(26,92,26,0.2);
+      border-radius: 20px;
+      background: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--cinza);
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--verde);
+      border-color: var(--verde);
+      color: #fff;
+    }
+
+    /* Bar list */
+    .bar-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 10px;
+    }
+
+    .bar-list::-webkit-scrollbar { width: 4px; }
+    .bar-list::-webkit-scrollbar-track { background: transparent; }
+    .bar-list::-webkit-scrollbar-thumb { background: rgba(26,92,26,0.25); border-radius: 2px; }
+
+    .bar-item {
+      padding: 11px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      transition: background 0.18s, transform 0.15s;
+      border: 1.5px solid transparent;
+      position: relative;
+    }
+
+    .bar-item:hover {
+      background: rgba(26,92,26,0.07);
+      transform: translateX(2px);
+    }
+
+    .bar-item.selected {
+      background: rgba(26,92,26,0.1);
+      border-color: rgba(26,92,26,0.25);
+    }
+
+    .bar-item-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--verde);
+      margin-bottom: 2px;
+      line-height: 1.3;
+    }
+
+    .bar-item-prato {
+      font-size: 12px;
+      color: var(--cinza);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .bar-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .regiao-tag {
+      font-size: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: rgba(26,92,26,0.1);
+      color: var(--verde);
+      letter-spacing: 0.3px;
+    }
+
+    /* ── MAP ── */
+    #map {
+      position: fixed;
+      top: 64px; left: 340px; right: 0; bottom: 0;
+      height: calc(100vh - 64px);
+      transition: left 0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+    #sidebar.collapsed ~ #map {
+      left: 0;
+    }
+
+    /* ── CUSTOM MARKER TOOLTIP ── */
+    .map-tooltip {
+      position: absolute;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+      transition: opacity 0.2s, transform 0.2s;
+      min-width: 230px;
+      max-width: 280px;
+    }
+
+    .map-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .tooltip-inner {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--sombra);
+      border: 2px solid var(--verde);
+      overflow: hidden;
+    }
+
+    .tooltip-header {
+      background: var(--verde);
+      padding: 10px 14px 8px;
+    }
+
+    .tooltip-header .t-nome {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .tooltip-header .t-regiao {
+      font-size: 11px;
+      color: var(--amarelo);
+      font-weight: 600;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tooltip-body {
+      padding: 10px 14px 12px;
+    }
+
+    .tooltip-prato-label {
+      font-size: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: var(--laranja);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .tooltip-prato-nome {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--verde);
+      margin-bottom: 5px;
+    }
+
+    .tooltip-prato-desc {
+      font-size: 11.5px;
+      color: var(--cinza);
+      line-height: 1.5;
+    }
+
+    .tooltip-address {
+      font-size: 11px;
+      color: var(--cinza);
+      margin-top: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      opacity: 0.8;
+    }
+
+    .tooltip-arrow {
+      width: 0; height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid var(--verde);
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* ── INFO PANEL (ao clicar no marker) ── */
+    #info-panel {
+      position: fixed;
+      bottom: 0;
+      left: 340px;
+      right: 0;
+      z-index: 800;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1), left 0.3s;
+    }
+
+    #info-panel.open {
+      transform: translateY(0);
+    }
+
+    #sidebar.collapsed ~ #info-panel {
+      left: 0;
+    }
+
+    .info-panel-inner {
+      background: var(--card-bg);
+      border-top: 3px solid var(--verde);
+      padding: 18px 28px 22px;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: flex-start;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .info-main {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .info-nome {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--verde);
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+
+    .info-bairro {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--laranja);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 3px 0 6px;
+    }
+
+    .info-endereco {
+      font-size: 13px;
+      color: var(--cinza);
+    }
+
+    .info-prato-section {
+      flex: 2;
+      min-width: 220px;
+    }
+
+    .info-prato-label {
+      font-size: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: var(--laranja);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    .info-prato-nome {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--verde);
+      margin-bottom: 4px;
+    }
+
+    .info-prato-desc {
+      font-size: 13px;
+      color: var(--cinza);
+      line-height: 1.55;
+    }
+
+    .info-preco {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--amarelo);
+      color: var(--escuro);
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-top: 8px;
+    }
+
+    .info-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+      min-width: 160px;
+    }
+
+    .btn-rota {
+      padding: 12px 22px;
+      background: var(--verde);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.18s, transform 0.15s;
+      text-decoration: none;
+      justify-content: center;
+    }
+
+    .btn-rota:hover {
+      background: var(--verde-claro);
+      transform: translateY(-1px);
+    }
+
+    .btn-fechar {
+      padding: 10px 22px;
+      background: transparent;
+      color: var(--cinza);
+      border: 1.5px solid rgba(26,92,26,0.2);
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .btn-fechar:hover {
+      background: rgba(26,92,26,0.06);
+      border-color: var(--verde);
+      color: var(--verde);
+    }
+
+    /* ── ROUTE PANEL ── */
+    #route-panel {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 850;
+      width: 290px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--sombra);
+      border: 2px solid var(--verde);
+      display: none;
+      overflow: hidden;
+    }
+
+    #route-panel.visible {
+      display: block;
+      animation: slideIn 0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .route-header {
+      background: var(--verde);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .route-header span {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .route-header button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 0 2px;
+      transition: color 0.15s;
+    }
+
+    .route-header button:hover { color: #fff; }
+
+    #route-info {
+      padding: 14px 16px;
+    }
+
+    #route-info .route-dest {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--verde);
+      margin-bottom: 8px;
+    }
+
+    .route-stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .route-stat {
+      text-align: center;
+    }
+
+    .route-stat .val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: var(--laranja);
+      line-height: 1;
+    }
+
+    .route-stat .lbl {
+      font-size: 10px;
+      color: var(--cinza);
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+    }
+
+    .travel-mode-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 7px 4px;
+      border: 1.5px solid rgba(26,92,26,0.2);
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 18px;
+      text-align: center;
+      transition: all 0.18s;
+    }
+
+    .mode-btn:hover, .mode-btn.active {
+      border-color: var(--verde);
+      background: rgba(26,92,26,0.08);
+    }
+
+    .btn-open-maps {
+      width: 100%;
+      padding: 10px;
+      background: var(--laranja);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.18s;
+      text-decoration: none;
+    }
+
+    .btn-open-maps:hover { background: #c94b15; }
+
+    /* ── LOADING OVERLAY ── */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: var(--verde);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity 0.5s;
+    }
+
+    #loading.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #loading .load-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      color: #fff;
+      letter-spacing: 3px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    #loading .load-logo span { color: var(--amarelo); }
+
+    #loading .load-sub {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 2px;
+    }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: var(--amarelo);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── NO API KEY WARNING ── */
+    #api-warning {
+      position: fixed;
+      top: 74px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9000;
+      background: #fff3cd;
+      border: 2px solid #f5c400;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: #7a5a00;
+      max-width: 600px;
+      text-align: center;
+      display: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    #api-warning strong { font-weight: 700; }
+    #api-warning a { color: var(--verde); font-weight: 600; }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      #sidebar { width: 100%; }
+      #sidebar.collapsed { transform: translateX(-100%); }
+      .sidebar-toggle { left: 100%; }
+      #sidebar.collapsed ~ .sidebar-toggle { left: 0; }
+      #map { left: 0 !important; }
+      #info-panel { left: 0 !important; }
+      #header h1 { font-size: 19px; }
+      .info-panel-inner { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="load-logo">COMIDA<br><span>DI BUTECO</span><br>BH 2025</div>
+  <div class="load-sub">CARREGANDO MAPA DOS BOTECOS</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- API Key Warning -->
+<div id="api-warning">
+  ⚠️ <strong>Configure sua API Key do Google Maps.</strong>
+  Abra o arquivo <code>index.html</code> e substitua <code>SUA_API_KEY_AQUI</code> pela sua chave.
+  <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">Como obter →</a>
+</div>
+
+<!-- Header -->
+<header id="header">
+  <div class="logo">
+    <div class="logo-icon">🍺</div>
+    <h1>COMIDA <span>DI BUTECO</span> BH 2025</h1>
+  </div>
+  <div class="header-right">
+    <div class="badge">25ª EDIÇÃO</div>
+    <div class="count-badge"><strong id="visible-count">58</strong> botecos</div>
+  </div>
+</header>
+
+<!-- Sidebar Toggle -->
+<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+  <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+
+<!-- Sidebar -->
+<aside id="sidebar">
+  <div class="search-box">
+    <input type="text" id="search-input" placeholder="🔍  Buscar bar ou prato..." />
+    <div class="filter-row" id="filter-row">
+      <button class="filter-btn active" data-regiao="TODOS">Todos</button>
+      <button class="filter-btn" data-regiao="Centro-Sul">Centro-Sul</button>
+      <button class="filter-btn" data-regiao="Pampulha">Pampulha</button>
+      <button class="filter-btn" data-regiao="Noroeste">Noroeste</button>
+      <button class="filter-btn" data-regiao="Nordeste">Nordeste</button>
+      <button class="filter-btn" data-regiao="Leste">Leste</button>
+      <button class="filter-btn" data-regiao="Oeste">Oeste</button>
+      <button class="filter-btn" data-regiao="Barreiro">Barreiro</button>
+      <button class="filter-btn" data-regiao="Venda Nova">V. Nova</button>
+    </div>
+  </div>
+  <div class="bar-list" id="bar-list"></div>
+</aside>
+
+<!-- Map -->
+<div id="map"></div>
+
+<!-- Info Panel -->
+<div id="info-panel">
+  <div class="info-panel-inner">
+    <div class="info-main">
+      <div class="info-nome" id="ip-nome"></div>
+      <div class="info-bairro" id="ip-bairro"></div>
+      <div class="info-endereco" id="ip-endereco"></div>
+    </div>
+    <div class="info-prato-section">
+      <div class="info-prato-label">🍽️ Petisco Participante</div>
+      <div class="info-prato-nome" id="ip-prato-nome"></div>
+      <div class="info-prato-desc" id="ip-prato-desc"></div>
+      <div class="info-preco">🏷️ R$ 35,00 (preço fixo)</div>
+    </div>
+    <div class="info-actions">
+      <button class="btn-rota" id="btn-rota" onclick="calcularRota()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12h18M13 6l6 6-6 6"/></svg>
+        Traçar Rota
+      </button>
+      <button class="btn-fechar" onclick="fecharInfoPanel()">✕ Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Route Panel -->
+<div id="route-panel">
+  <div class="route-header">
+    <span>🗺️ Rota Calculada</span>
+    <button onclick="fecharRota()">✕</button>
+  </div>
+  <div id="route-info" style="display:none">
+    <div class="route-dest" id="route-dest"></div>
+    <div class="route-stats">
+      <div class="route-stat">
+        <div class="val" id="route-dist">–</div>
+        <div class="lbl">DISTÂNCIA</div>
+      </div>
+      <div class="route-stat">
+        <div class="val" id="route-time">–</div>
+        <div class="lbl">TEMPO</div>
+      </div>
+    </div>
+    <div class="travel-mode-row" id="travel-modes">
+      <button class="mode-btn active" data-mode="DRIVING" title="Carro" onclick="trocarModo(this,'DRIVING')">🚗</button>
+      <button class="mode-btn" data-mode="WALKING" title="A pé" onclick="trocarModo(this,'WALKING')">🚶</button>
+      <button class="mode-btn" data-mode="TRANSIT" title="Transporte público" onclick="trocarModo(this,'TRANSIT')">🚌</button>
+      <button class="mode-btn" data-mode="BICYCLING" title="Bicicleta" onclick="trocarModo(this,'BICYCLING')">🚴</button>
+    </div>
+    <a class="btn-open-maps" id="btn-google-maps" href="#" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Abrir no Google Maps
+    </a>
+  </div>
+</div>
+
+<!-- Tooltip (hover) -->
+<div class="map-tooltip" id="map-tooltip">
+  <div class="tooltip-inner">
+    <div class="tooltip-header">
+      <div class="t-nome" id="tt-nome"></div>
+      <div class="t-regiao">📍 <span id="tt-regiao"></span></div>
+    </div>
+    <div class="tooltip-body">
+      <div class="tooltip-prato-label">Prato participante</div>
+      <div class="tooltip-prato-nome" id="tt-prato-nome"></div>
+      <div class="tooltip-prato-desc" id="tt-prato-desc"></div>
+      <div class="tooltip-address" id="tt-address">
+        <span>📌</span><span id="tt-endereco"></span>
+      </div>
+    </div>
+  </div>
+  <div class="tooltip-arrow"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  DADOS DOS BARES
+// ═══════════════════════════════════════════════
+const BARES = [
+  { id:1, nome:"Arcos Bar", endereco:"Rua da Bahia, 1144 - Loja 5", bairro:"Centro", regiao:"Centro-Sul", prato:"Panela da Diversidade", desc:"Acem cozido com ervas finas acompanhado com batata rústica", lat:-19.9239, lng:-43.9386 },
+  { id:2, nome:"Armazém Santa Amélia", endereco:"Av. da Sinfonia, 253", bairro:"Santa Amélia", regiao:"Pampulha", prato:"Segredo do Armazém", desc:"Polenta cremosa com ragu de carnes, agrião fresco, crispy de parmesão", lat:-19.8697, lng:-43.9528 },
+  { id:3, nome:"Bar Pompeu", endereco:"Rua São Miguel, 779", bairro:"Itapoã", regiao:"Pampulha", prato:"É mas num é", desc:"Iscas de filé de frango empanadas em flocos de arroz ao molho de alho-poró e cream cheese, batata frita canoa", lat:-19.8580, lng:-43.9325 },
+  { id:4, nome:"Buteco do Lili", endereco:"Rua Líbero Badaró, 493", bairro:"Dona Clara", regiao:"Pampulha", prato:"Sabores de Prata", desc:"Fraldinha de panela ao molho Roti com batata ao murro e pães de queijo fritos", lat:-19.8756, lng:-43.9612 },
+  { id:5, nome:"Buteco do Rod", endereco:"Rua José Moura Peçanha, 12", bairro:"Ouro Preto", regiao:"Pampulha", prato:"Canela di Butequêro", desc:"Cambito suíno ao molho de cerveja preta sobre polenta com páprica defumada, farofa panko com bacon e queijo gouda", lat:-19.8831, lng:-43.9698 },
+  { id:6, nome:"Bar do Bem", endereco:"Rua Vicenteina Coutinho Camargos, 100", bairro:"Álvaro Camargos", regiao:"Noroeste", prato:"A Furiosa", desc:"Miolo de acém cozido na cerveja, torradas com manteiga e ervas, pão de queijo assado e pastel de vento", lat:-19.9028, lng:-44.0141 },
+  { id:7, nome:"Tangânica Art Vegan", endereco:"Rua Padre Demerval Gomes, 380", bairro:"Coração Eucarístico", regiao:"Noroeste", prato:"Vegano colorido", desc:"Kibes de beterraba recheados com requeijão vegano, fuxicos de inhame, pasteizinhos de chimeji e croquetinhos de abóbora", lat:-19.9165, lng:-43.9945 },
+  { id:8, nome:"Bar Vaca Faladeira", endereco:"Rua Álvaro Mata, 466", bairro:"Nova Cachoeirinha", regiao:"Nordeste", prato:"Vaca Faladeira", desc:"Língua de boi recheada com bacon e cenoura ao molho madeira, com minipães italianos recheados", lat:-19.8958, lng:-43.9725 },
+  { id:9, nome:"Bendita Bagunça", endereco:"Rua Silva Fortes, 47 - Loja 6", bairro:"União", regiao:"Nordeste", prato:"PARABÉNS CDB", desc:"Coxinhas de massas coloridas: abóbora com frango e quiabo, mandioca com carne de lata, beterraba com alho-poró e queijo canastra", lat:-19.8814, lng:-43.9581 },
+  { id:10, nome:"Bar Camisola", endereco:"Rua Luther King, 242", bairro:"Cidade Nova", regiao:"Nordeste", prato:"Costela Mineira", desc:"Costela de boi cozida na cerveja preta com purê de mandioca com queijo", lat:-19.8977, lng:-43.9612 },
+  { id:11, nome:"Dona Ju Gastrobar", endereco:"Rua dos Borges, 1520 - Loja 03", bairro:"Jardim Vitória", regiao:"Nordeste", prato:"Jú-elhoo", desc:"Joelho de porco marinado em especiarias, cozido na cerveja, com angu de milho-verde e couve. Ambrósia de sobremesa", lat:-19.8703, lng:-43.9442 },
+  { id:12, nome:"Bar Temático", endereco:"Rua Pirite, 187", bairro:"Santa Teresa", regiao:"Leste", prato:"#CDB - 25 anos Arrumado", desc:"Carne de sol, feijão de corda, farofa, vinagrete e manteiga de garrafa", lat:-19.9359, lng:-43.9086 },
+  { id:13, nome:"Cantinho da Baiana", endereco:"Rua Itaité, 422", bairro:"São Geraldo", regiao:"Leste", prato:"Mineirou nos 25", desc:"Tiras de galeto envoltas em casquinha crocante de parmesão, com creme de bacon crispy", lat:-19.9203, lng:-43.9092 },
+  { id:14, nome:"Bar do Nelson", endereco:"Rua Vicente Risola, 1000", bairro:"Santa Inês", regiao:"Leste", prato:"Boudas de Prata", desc:"Bolinho de feijoada na cama de couve crispy", lat:-19.9286, lng:-43.9031 },
+  { id:15, nome:"Bar Meteoro", endereco:"Rua Vicente Risola, 1305", bairro:"Santa Inês", regiao:"Leste", prato:"Meteoro – Explosão de sabores", desc:"Tiras de picanha, alcatra e maminha ao molho de cerveja preta, batata chips e creme de alho", lat:-19.9295, lng:-43.9022 },
+  { id:16, nome:"Iracema BH", endereco:"Rua Almandina, 56", bairro:"Santa Teresa", regiao:"Leste", prato:"Harumaki de Carne de Panela", desc:"Rolinho primavera recheado com carne de panela cozida com especiarias, servido com molho agridoce e picante", lat:-19.9345, lng:-43.9098 },
+  { id:17, nome:"Koqueiros Bar", endereco:"Rua Silviano Brandão, 1293", bairro:"Sagrada Família", regiao:"Leste", prato:"Duvidei, mas amei!", desc:"Berinjela empanada frita ao molho bolonhesa em cama de requeijão cremoso, coberta de muçarela, com pasteizinhos", lat:-19.9212, lng:-43.9128 },
+  { id:18, nome:"Bar da Cíntia", endereco:"Rua Pastor Rui Franco, 257", bairro:"São João Batista", regiao:"Venda Nova", prato:"Língua na Caracu", desc:"Língua marinada na cerveja Caracu, cheiro-verde, mandioca cozida na manteiga de garrafa", lat:-19.8156, lng:-43.9758 },
+  { id:19, nome:"Botequim Buritis", endereco:"Rua Vitório Magnavacca, 39", bairro:"Buritis", regiao:"Oeste", prato:"Butequeiro 25", desc:"Lombinho suíno na lata com mandioquinha frita ao molho cremoso raiz", lat:-19.9725, lng:-43.9783 },
+  { id:20, nome:"Espettinho.com", endereco:"Rua Eli Seabra Filho, 510", bairro:"Buritis", regiao:"Oeste", prato:"Almôndegas Suínas Gratinadas", desc:"Almôndegas suínas ao molho de tomate caseiro e muçarela, com espetinho de 'Sacanagem' e licor de doce de leite", lat:-19.9712, lng:-43.9798 },
+  { id:21, nome:"Dona Dora Restaurante", endereco:"Rua Rio de Janeiro, 1205", bairro:"Centro", regiao:"Centro-Sul", prato:"Boleco (Bolo di Buteco)", desc:"Purê rústico de mandioca com ragú de alcatra, fonduta de queijo canastra e crispy de couve", lat:-19.9242, lng:-43.9381 },
+  { id:22, nome:"Casa da Madrinha", endereco:"Rua Barbacena, 212 - Loja 7", bairro:"Barro Preto", regiao:"Centro-Sul", prato:"Bem Mineiro", desc:"Polenta crocante com ragu de frango com quiabo e queijo minas", lat:-19.9358, lng:-43.9414 },
+  { id:23, nome:"Ember BBQ", endereco:"Rua São Romão, 460", bairro:"São Pedro", regiao:"Centro-Sul", prato:"Cupim Sertanejo", desc:"Cupim defumado em lenha de macieira sobre angu de milho verde com queijo minas, couve crispy e pimenta jalapeño", lat:-19.9386, lng:-43.9317 },
+  { id:24, nome:"Xambar", endereco:"Av. Augusto de Lima, 233 - 2º andar", bairro:"Centro", regiao:"Centro-Sul", prato:"Mineirin Oriental", desc:"Miolo de acém assado na pressão com mandioca cozida na manteiga e farofa de banana", lat:-19.9220, lng:-43.9397 },
+  { id:25, nome:"Bar do Discão", endereco:"Rua David Alves do Vale, 68", bairro:"Santa Rosa", regiao:"Sul", prato:"O fabuloso discão", desc:"Polpetone com recheio de muçarela, caponata de berinjela e abobrinha", lat:-19.9831, lng:-43.9545 },
+  { id:26, nome:"Trem de Roças", endereco:"Av. Francisco Sá, 658", bairro:"Prado", regiao:"Oeste", prato:"Trem de roças", desc:"Bochecha de porco na cama de angu mole, pesto de horta, mandioca e agrião, acompanha pão e patê de fígado", lat:-19.9478, lng:-43.9945 },
+  { id:27, nome:"Bar Chora Canelinha", endereco:"Rua Arthur Luchesi, 356", bairro:"Santa Helena (Barreiro)", regiao:"Barreiro", prato:"Chora canelinha", desc:"Ossobuco com purê de batatas e torradas de alho-poró", lat:-20.0028, lng:-44.0175 },
+  { id:28, nome:"Bar do Kim", endereco:"Rua Júlio de Castilho, 1071", bairro:"Betânia", regiao:"Oeste", prato:"Músculo à moda do Kim", desc:"Músculo bovino com champignon e torradas", lat:-19.9545, lng:-43.9892 },
+  { id:29, nome:"Bar Custelinha", endereco:"Av. Amazonas, 4649", bairro:"Nova Suíça", regiao:"Oeste", prato:"Custelinha di Buteco", desc:"Costelinha com batata e queijo ao molho branco", lat:-19.9601, lng:-44.0014 },
+  { id:30, nome:"Bar Trilhas de Minas", endereco:"Rua Gávea, 422", bairro:"Jardim América", regiao:"Oeste", prato:"Trilhas de Minas", desc:"Almôndegas ao molho de tomates, servidas com polenta", lat:-19.9522, lng:-43.9945 },
+  { id:31, nome:"Bar dos Meninos", endereco:"Rua Lindolfo Deodoro, 503-A", bairro:"Salgado Filho", regiao:"Oeste", prato:"Bodas de prata", desc:"Costelinha suína marinada em vinho tinto com mostarda em folhas e creme de batata", lat:-19.9645, lng:-43.9912 },
+  { id:32, nome:"Junto Juntinho Bar", endereco:"Rua Cura D'Ars, 542", bairro:"São João Batista", regiao:"Oeste", prato:"Poliamor Culinário", desc:"Costelinha de porco com purê de mandioca na manteiga de garrafa, parmesão, couve crispe e geleia de abacaxi apimentada", lat:-19.9558, lng:-44.0025 },
+  { id:33, nome:"Santuário Retrô", endereco:"Av. Padre Vieira, 150", bairro:"Minas Brasil", regiao:"Noroeste", prato:"Presentim Retrô", desc:"Trouxinhas de lombo marinado 12h, envoltas em bacon, recheadas com ingredientes das edições históricas do CDB", lat:-19.9148, lng:-44.0056 },
+  { id:34, nome:"Bar do Mulão", endereco:"Rua Marambaia, 291", bairro:"Caiçara", regiao:"Noroeste", prato:"Mullé", desc:"Chã de fora recheada com calabresa ao molho de cebola caramelizada, purê de batatas, pimenta biquinho e cebolinha", lat:-19.9078, lng:-44.0017 },
+  { id:35, nome:"Bar Boizinho no Milharal", endereco:"Rua Coronel José Benjamim, 770", bairro:"Padre Eustáquio", regiao:"Noroeste", prato:"Boizinho no milharal", desc:"Costela bovina ao molho roti com quirera de milho, queijo canastra meia cura e milho verde cozido", lat:-19.9225, lng:-44.0025 },
+  { id:36, nome:"Panela de Prata Bar", endereco:"Av. Ressaca, 353", bairro:"Coração Eucarístico", regiao:"Noroeste", prato:"Panela de Prata – 25 anos", desc:"Versão mineira do goulash húngaro: carne ensopada com fatias de pão", lat:-19.9172, lng:-43.9978 },
+  { id:37, nome:"Bar Ô Trem Bão", endereco:"Rua Vicenteina Coutinho Camargos, 100", bairro:"Álvaro Camargos", regiao:"Noroeste", prato:"Ô trem bão, sô", desc:"Maçã de peito com mandioquinha e torradas de pão francês", lat:-19.9035, lng:-44.0151 },
+  { id:38, nome:"Bar Porco Sem Vergonha", endereco:"Rua Violeta, 369", bairro:"Esplanada", regiao:"Leste", prato:"Porco sem vergonha", desc:"Picadinho de carne de porco ao molho com creme de batata", lat:-19.9258, lng:-43.9058 },
+  { id:39, nome:"Bar Frangônia", endereco:"Rua Begônia, 199", bairro:"Esplanada", regiao:"Leste", prato:"Frangônia", desc:"Coxinha da asa de frango empanada, batata rústica, molho parmesão e ervas", lat:-19.9265, lng:-43.9065 },
+  { id:40, nome:"Bar Êêêê Lasqueira", endereco:"Rua Santo Amaro, 257", bairro:"Sagrada Família", regiao:"Leste", prato:"Êêêê, lasqueira!!!", desc:"Panturrilha suína no seu molho com legumes grelhados", lat:-19.9222, lng:-43.9115 },
+  { id:41, nome:"Bar Rocambole", endereco:"Rua Curitiba, 2039", bairro:"Lourdes", regiao:"Centro-Sul", prato:"Rocambole de torresmo", desc:"Torresmo de barriga marinado na cachaça, palitinhos de tapioca e geleia de abacaxi com pimenta e canela", lat:-19.9459, lng:-43.9395 },
+  { id:42, nome:"Bar DE '25' 10 TMJ", endereco:"Rua Tenente Marino Freire, 270", bairro:"Maria Helena", regiao:"Nordeste", prato:"DE '25' 10 TMJ", desc:"Picanha suína assada, minicebola empanada, farofa de ervilha e chutney de abacaxi com pimenta", lat:-19.8885, lng:-43.9695 },
+  { id:43, nome:"Bar SôdaTerra", endereco:"Rua Capitão Sérgio Pires, 41", bairro:"Minascaixa", regiao:"Nordeste", prato:"SôdaTerra", desc:"Carne de panela com especiarias, mandioca cozida no suco de beterraba e crispy de bacon com banana-da-terra", lat:-19.8792, lng:-43.9558 },
+  { id:44, nome:"Bar Costelão dos Deuses", endereco:"Rua Amílcar Cabral, 515", bairro:"Milionários", regiao:"Barreiro", prato:"Costelão dos Deuses", desc:"Costelão de boi marinado com ervas, purê de mandioca aligot, farofa crocante e molho agridoce", lat:-19.9958, lng:-44.0412 },
+  { id:45, nome:"Bar Porpeta de Buteco", endereco:"Rua Lindolfo de Azevedo, 1263", bairro:"Jardim América", regiao:"Oeste", prato:"Porpeta de Buteco", desc:"Almôndegas ao sugo com batata recheada", lat:-19.9528, lng:-43.9952 },
+  { id:46, nome:"Bar Paleta Suína", endereco:"Av. Virgílio de Melo Franco, 400", bairro:"Jardim Atlântico", regiao:"Oeste", prato:"Paleta Suína Mineira", desc:"Paleta suína marinada com molho especial, farofa de bacon e banana-da-terra caramelizada", lat:-19.9612, lng:-44.0058 },
+  { id:47, nome:"Bar Nuuuu Quebrou", endereco:"Rua Ernesto Braga, 2", bairro:"Jardim Atlântico", regiao:"Oeste", prato:"Nuuuu… Quebrou Minha Costelinha", desc:"Porpeta de costelinha com bacon, queijo minas e molho pesto de couve e coentro", lat:-19.9618, lng:-44.0062 },
+  { id:48, nome:"Bar Macaxeira Quente", endereco:"Rua Carlos Sá, 180", bairro:"Jardim Atlântico", regiao:"Oeste", prato:"Macaxeira no Buraco Quente", desc:"Carne desfiada ao molho na panhoca com macaxeira e cebola caramelizada", lat:-19.9625, lng:-44.0068 },
+  { id:49, nome:"Bar Parada Holandesa", endereco:"Av. dos Engenheiros, 1095", bairro:"Alípio de Melo", regiao:"Nordeste", prato:"Parada Holandesa", desc:"Carne bovina marinada na cerveja, cozida lentamente com purê de mandioca e batata crocante", lat:-19.8831, lng:-43.9645 },
+  { id:50, nome:"Bar Bodas no Prato", endereco:"Av. dos Engenheiros, 1071", bairro:"Alípio de Melo", regiao:"Nordeste", prato:"Bodas no prato", desc:"Rib ao molho Rubi – costelinha de porco ao molho rubi", lat:-19.8825, lng:-43.9638 },
+  { id:51, nome:"Bar Milão Maluco", endereco:"Av. Doutor Álvaro Camargos, 1113", bairro:"São João Batista", regiao:"Venda Nova", prato:"Milão Maluco", desc:"Ossobuco cozido ao molho tradicional com purê de batata e farofinha da casa", lat:-19.8162, lng:-43.9764 },
+  { id:52, nome:"Bar Língua da Vovó Virinha", endereco:"Rua do Ouro, 835", bairro:"Serra", regiao:"Centro-Sul", prato:"Língua da vovó Virinha", desc:"Língua de boi assada sobre creme de batata e milho com vinagrete mineiro e redução do caldo com cerveja", lat:-19.9578, lng:-43.9331 },
+  { id:53, nome:"Bar Canelada Suína", endereco:"Rua Piauí, 1884", bairro:"Funcionários", regiao:"Centro-Sul", prato:"Canelada Suína", desc:"Panturrilha suína, mandioca cozida com queijo e manteiga, cebola assada e crispy de couve", lat:-19.9342, lng:-43.9278 },
+  { id:54, nome:"Bar Contra Filet Flambado", endereco:"Av. Portugal, 4325", bairro:"Itapoã", regiao:"Pampulha", prato:"Contra filet flambado na cachaça", desc:"Contrafilé flambado ao creme, mandioca na manteiga de garrafa com queijo gratinado e bacon crocante", lat:-19.8592, lng:-43.9315 },
+  { id:55, nome:"Café Palhares", endereco:"Rua Aimorés, 381", bairro:"Funcionários", regiao:"Centro-Sul", prato:"Especial 25 anos", desc:"Prato especial criado pelo tricampeão do Comida di Buteco em BH", lat:-19.9368, lng:-43.9265 },
+  { id:56, nome:"Amarelim", endereco:"Rua Grão Mogol, 194", bairro:"Carmo", regiao:"Sul", prato:"Petisco da casa", desc:"Bar tradicional de BH com criação especial para o concurso", lat:-19.9898, lng:-43.9545 },
+  { id:57, nome:"Fogão de Minas", endereco:"Rua Pedra Azul, 274", bairro:"Buritis", regiao:"Oeste", prato:"Sabor de Minas", desc:"Tradição mineira em petisco exclusivo para o Comida di Buteco 2025", lat:-19.9718, lng:-43.9802 },
+  { id:58, nome:"Trem Bão Demais Sô", endereco:"Rua Silva Fortes, 47", bairro:"União", regiao:"Nordeste", prato:"Trem Bão Demais Sô", desc:"Bolinho de linguiça suína recheado de muçarela com toque de limão", lat:-19.8821, lng:-43.9575 },
+];
+
+// ═══════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ═══════════════════════════════════════════════
+let map, directionsService, directionsRenderer;
+let markers = [];
+let activeBar = null;
+let userLocation = null;
+let currentMode = 'DRIVING';
+let filteredBares = [...BARES];
+const API_KEY = 'AIzaSyCzdgg-BoryCe0-fzAYHmn-bGvVGLCrWRE'; // ← substitua aqui
+
+// ═══════════════════════════════════════════════
+//  TRATAMENTO DE ERRO DE AUTENTICAÇÃO DO MAPS
+// ═══════════════════════════════════════════════
+window.gm_authFailure = function() {
+  document.getElementById('map').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;background:#1a1a1a;color:#fff;font-family:sans-serif;">
+      <div style="font-size:48px">🔑</div>
+      <div style="font-size:18px;font-weight:bold">Erro de autenticação da API Key</div>
+      <div style="font-size:13px;color:#aaa;max-width:400px;text-align:center">
+        A chave do Google Maps é inválida, expirou ou não tem as APIs necessárias habilitadas.<br><br>
+        Verifique se <b>Maps JavaScript API</b> e <b>Directions API</b> estão ativas no Google Cloud Console.
+      </div>
+    </div>`;
+  document.getElementById('loading').style.display = 'none';
+};
+
+// ═══════════════════════════════════════════════
+//  INICIALIZAÇÃO DO MAPA
+// ═══════════════════════════════════════════════
+window.initMap = function() {
+  // Verifica se a API key foi configurada
+  if (API_KEY === '_AQUIAIzaSyCzdgg-BoryCe0-fzAYHmn-bGvVGLCrWRE') {
+    document.getElementById('api-warning').style.display = 'block';
+  }
+
+  // map = new google.maps.Map(document.getElementById('map'), {
+  //   center: { lat: -19.9229, lng: -43.9451 },
+  //   zoom: 12,
+  //   mapId: 'buteco_map',
+  //   disableDefaultUI: false,
+  //   zoomControl: true,
+  //   mapTypeControl: false,
+  //   streetViewControl: false,
+  //   fullscreenControl: true,
+  //   styles: [
+  //     { featureType:"poi", elementType:"labels", stylers:[{visibility:"off"}] },
+  //     { featureType:"transit", elementType:"labels", stylers:[{visibility:"off"}] },
+  //     { featureType:"water", stylers:[{color:"#b8d8e8"}] },
+  //     { featureType:"landscape", stylers:[{color:"#f5f0e8"}] },
+  //     { featureType:"road.highway", elementType:"geometry", stylers:[{color:"#d4c28a"}] },
+  //     { featureType:"road.arterial", elementType:"geometry", stylers:[{color:"#e8dfc0"}] },
+  //     { featureType:"road", elementType:"labels.text.fill", stylers:[{color:"#5a5040"}] },
+  //     { featureType:"administrative.locality", elementType:"labels.text.fill", stylers:[{color:"#1a5c1a"}] },
+  //   ]
+  // });
+
+  map = new google.maps.Map(document.getElementById('map'), {
+  center: { lat: -19.9229, lng: -43.9451 },
+  zoom: 12,
+  disableDefaultUI: false,
+  zoomControl: true,
+  mapTypeControl: false,
+  streetViewControl: false,
+  fullscreenControl: true,
+  styles: [
+    { featureType:"poi", elementType:"labels", stylers:[{visibility:"off"}] },
+    { featureType:"transit", elementType:"labels", stylers:[{visibility:"off"}] },
+    { featureType:"water", stylers:[{color:"#b8d8e8"}] },
+    { featureType:"landscape", stylers:[{color:"#f5f0e8"}] },
+    { featureType:"road.highway", elementType:"geometry", stylers:[{color:"#d4c28a"}] },
+    { featureType:"road.arterial", elementType:"geometry", stylers:[{color:"#e8dfc0"}] },
+    { featureType:"road", elementType:"labels.text.fill", stylers:[{color:"#5a5040"}] },
+    { featureType:"administrative.locality", elementType:"labels.text.fill", stylers:[{color:"#1a5c1a"}] },
+  ]
+});
+
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer({
+    map,
+    suppressMarkers: true,
+    polylineOptions: {
+      strokeColor: '#1a5c1a',
+      strokeWeight: 5,
+      strokeOpacity: 0.85
+    }
+  });
+
+  criarMarkers();
+  renderizarLista();
+  obterLocalizacaoUsuario();
+  esconderLoading();
+};
+
+// ═══════════════════════════════════════════════
+//  MARKERS CUSTOMIZADOS
+// ═══════════════════════════════════════════════
+function criarSVGPin(cor = '#1a5c1a') {
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="46" viewBox="0 0 36 46">
+      <filter id="s"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.35"/></filter>
+      <path d="M18 2C9.16 2 2 9.16 2 18c0 12 16 26 16 26S34 30 34 18C34 9.16 26.84 2 18 2z"
+        fill="${cor}" filter="url(#s)"/>
+      <text x="18" y="23" text-anchor="middle" font-size="14" font-family="serif">🍺</text>
+    </svg>
+  `)}`;
+}
+
+function criarMarkers() {
+  markers.forEach(m => m.marker.setMap(null));
+  markers = [];
+
+  filteredBares.forEach(bar => {
+    const marker = new google.maps.Marker({
+      position: { lat: bar.lat, lng: bar.lng },
+      map,
+      icon: {
+        url: criarSVGPin('#1a5c1a'),
+        scaledSize: new google.maps.Size(32, 42),
+        anchor: new google.maps.Point(16, 42),
+      },
+      title: bar.nome,
+      animation: google.maps.Animation.DROP,
+    });
+
+    // Hover: mostrar tooltip
+    marker.addListener('mouseover', (e) => mostrarTooltip(bar, e));
+    marker.addListener('mouseout', () => esconderTooltip());
+
+    // Click: abrir painel
+    marker.addListener('click', () => {
+      selecionarBar(bar, marker);
+      fecharRota();
+    });
+
+    markers.push({ bar, marker });
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  TOOLTIP HOVER
+// ═══════════════════════════════════════════════
+const tooltip = document.getElementById('map-tooltip');
+const mapEl = document.getElementById('map');
+
+function mostrarTooltip(bar, event) {
+  document.getElementById('tt-nome').textContent = bar.nome;
+  document.getElementById('tt-regiao').textContent = `${bar.bairro} · ${bar.regiao}`;
+  document.getElementById('tt-prato-nome').textContent = bar.prato;
+  document.getElementById('tt-prato-desc').textContent = bar.desc;
+  document.getElementById('tt-endereco').textContent = bar.endereco;
+
+  const mapRect = mapEl.getBoundingClientRect();
+  const sidebarW = document.getElementById('sidebar').classList.contains('collapsed') ? 0 : 340;
+  const overlayPoint = event.domEvent;
+
+  let x = (overlayPoint.clientX - mapRect.left) - 115;
+  let y = (overlayPoint.clientY - mapRect.top) - 210;
+
+  x = Math.max(8, Math.min(x, mapRect.width - 290));
+  y = Math.max(8, y);
+
+  tooltip.style.left = (sidebarW + x) + 'px';
+  tooltip.style.top = (64 + y) + 'px';
+
+  tooltip.classList.add('visible');
+}
+
+function esconderTooltip() {
+  tooltip.classList.remove('visible');
+}
+
+// ═══════════════════════════════════════════════
+//  SELECIONAR BAR
+// ═══════════════════════════════════════════════
+function selecionarBar(bar, marker) {
+  activeBar = bar;
+
+  // Reset markers
+  markers.forEach(m => {
+    m.marker.setIcon({
+      url: criarSVGPin('#1a5c1a'),
+      scaledSize: new google.maps.Size(32, 42),
+      anchor: new google.maps.Point(16, 42),
+    });
+  });
+
+  // Highlight
+  marker.setIcon({
+    url: criarSVGPin('#e8591a'),
+    scaledSize: new google.maps.Size(38, 50),
+    anchor: new google.maps.Point(19, 50),
+  });
+
+  // Center map
+  map.panTo({ lat: bar.lat, lng: bar.lng });
+  if (map.getZoom() < 14) map.setZoom(14);
+
+  // Preencher info panel
+  document.getElementById('ip-nome').textContent = bar.nome;
+  document.getElementById('ip-bairro').textContent = `${bar.bairro} · ${bar.regiao}`;
+  document.getElementById('ip-endereco').textContent = '📍 ' + bar.endereco;
+  document.getElementById('ip-prato-nome').textContent = bar.prato;
+  document.getElementById('ip-prato-desc').textContent = bar.desc;
+
+  document.getElementById('info-panel').classList.add('open');
+
+  // Sidebar highlight
+  document.querySelectorAll('.bar-item').forEach(el => el.classList.remove('selected'));
+  const listItem = document.querySelector(`.bar-item[data-id="${bar.id}"]`);
+  if (listItem) {
+    listItem.classList.add('selected');
+    listItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function fecharInfoPanel() {
+  document.getElementById('info-panel').classList.remove('open');
+  markers.forEach(m => {
+    m.marker.setIcon({
+      url: criarSVGPin('#1a5c1a'),
+      scaledSize: new google.maps.Size(32, 42),
+      anchor: new google.maps.Point(16, 42),
+    });
+  });
+  document.querySelectorAll('.bar-item').forEach(el => el.classList.remove('selected'));
+  activeBar = null;
+}
+
+// ═══════════════════════════════════════════════
+//  ROTA
+// ═══════════════════════════════════════════════
+function obterLocalizacaoUsuario() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+
+        // Pin do usuário
+        new google.maps.Marker({
+          position: userLocation,
+          map,
+          icon: {
+            url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" fill="#f5c400" stroke="#1a5c1a" stroke-width="2"/>
+                <circle cx="12" cy="12" r="4" fill="#1a5c1a"/>
+              </svg>
+            `)}`,
+            scaledSize: new google.maps.Size(24, 24),
+            anchor: new google.maps.Point(12, 12),
+          },
+          title: 'Você está aqui',
+          zIndex: 999,
+        });
+      },
+      () => { /* Geolocalização negada */ }
+    );
+  }
+}
+
+function calcularRota() {
+  if (!activeBar) return;
+
+  if (!userLocation) {
+    alert('Por favor, permita o acesso à sua localização para calcular a rota.');
+    return;
+  }
+
+  const origin = userLocation;
+  const destination = { lat: activeBar.lat, lng: activeBar.lng };
+
+  directionsService.route({
+    origin,
+    destination,
+    travelMode: google.maps.TravelMode[currentMode],
+  }, (result, status) => {
+    if (status === 'OK') {
+      directionsRenderer.setDirections(result);
+
+      const leg = result.routes[0].legs[0];
+      document.getElementById('route-dest').textContent = `📍 ${activeBar.nome}`;
+      document.getElementById('route-dist').textContent = leg.distance.text;
+      document.getElementById('route-time').textContent = leg.duration.text;
+      document.getElementById('route-info').style.display = 'block';
+
+      // Link Google Maps externo
+      const modeMap = { DRIVING:'driving', WALKING:'walking', TRANSIT:'transit', BICYCLING:'bicycling' };
+      const gmUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${destination.lat},${destination.lng}&travelmode=${modeMap[currentMode]}`;
+      document.getElementById('btn-google-maps').href = gmUrl;
+
+      document.getElementById('route-panel').classList.add('visible');
+    } else {
+      alert('Não foi possível calcular a rota. Tente novamente.');
+    }
+  });
+}
+
+function trocarModo(btn, modo) {
+  currentMode = modo;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (activeBar && userLocation) calcularRota();
+}
+
+function fecharRota() {
+  directionsRenderer.setDirections({ routes: [] });
+  document.getElementById('route-panel').classList.remove('visible');
+  document.getElementById('route-info').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════
+//  LISTA E FILTROS
+// ═══════════════════════════════════════════════
+let currentRegiao = 'TODOS';
+let currentSearch = '';
+
+function renderizarLista() {
+  const list = document.getElementById('bar-list');
+  filteredBares = BARES.filter(b => {
+    const matchRegiao = currentRegiao === 'TODOS' || b.regiao === currentRegiao;
+    const q = currentSearch.toLowerCase();
+    const matchSearch = !q || b.nome.toLowerCase().includes(q) || b.prato.toLowerCase().includes(q) || b.desc.toLowerCase().includes(q) || b.bairro.toLowerCase().includes(q);
+    return matchRegiao && matchSearch;
+  });
+
+  document.getElementById('visible-count').textContent = filteredBares.length;
+
+  list.innerHTML = filteredBares.map(b => `
+    <div class="bar-item" data-id="${b.id}" onclick="clicouNaLista(${b.id})">
+      <div class="bar-item-name">${b.nome}</div>
+      <div class="bar-item-prato">${b.prato} — ${b.desc}</div>
+      <div class="bar-item-meta">
+        <span class="regiao-tag">${b.regiao}</span>
+        <span style="font-size:11px;color:#aaa">${b.bairro}</span>
+      </div>
+    </div>
+  `).join('');
+
+  // Atualizar markers no mapa
+  criarMarkers();
+}
+
+function clicouNaLista(id) {
+  const bar = BARES.find(b => b.id === id);
+  if (!bar) return;
+  const markerObj = markers.find(m => m.bar.id === id);
+  if (markerObj) selecionarBar(bar, markerObj.marker);
+  // Fechar sidebar em mobile
+  if (window.innerWidth <= 700) {
+    document.getElementById('sidebar').classList.add('collapsed');
+  }
+}
+
+// Filtro por região
+document.getElementById('filter-row').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRegiao = btn.dataset.regiao;
+  renderizarLista();
+});
+
+// Search
+document.getElementById('search-input').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  renderizarLista();
+});
+
+// Sidebar toggle
+document.getElementById('sidebar-toggle').addEventListener('click', () => {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('collapsed');
+  // Forçar redimensionamento do mapa
+  setTimeout(() => google.maps.event.trigger(map, 'resize'), 310);
+});
+
+// ═══════════════════════════════════════════════
+//  LOADING
+// ═══════════════════════════════════════════════
+function esconderLoading() {
+  const loading = document.getElementById('loading');
+  loading.classList.add('fade-out');
+  setTimeout(() => { loading.style.display = 'none'; }, 600);
+}
+</script>
+
+<!-- Google Maps API -->
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzdgg-BoryCe0-fzAYHmn-bGvVGLCrWRE&callback=initMap&loading=async"
+  async defer>
+</script>
+
+</body>
+</html>
