@@ -136,9 +136,7 @@
 
     .sidebar-toggle:hover { background: var(--verde-claro); }
 
-    #sidebar.collapsed ~ .sidebar-toggle {
-      left: 0;
-    }
+  
 
     .sidebar-toggle svg {
       width: 14px; height: 14px;
@@ -146,10 +144,7 @@
       transition: transform 0.3s;
     }
 
-    #sidebar.collapsed ~ .sidebar-toggle svg {
-      transform: rotate(180deg);
-    }
-
+  
     /* Search */
     .search-box {
       padding: 14px 14px 10px;
@@ -1285,8 +1280,12 @@ document.getElementById('search-input').addEventListener('input', e => {
 // Sidebar toggle
 document.getElementById('sidebar-toggle').addEventListener('click', () => {
   const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('collapsed');
-  // Forçar redimensionamento do mapa
+  const toggle = document.getElementById('sidebar-toggle');
+  const isCollapsed = sidebar.classList.toggle('collapsed');
+  
+  toggle.style.left = isCollapsed ? '0px' : '340px';
+  toggle.querySelector('svg').style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+  
   setTimeout(() => google.maps.event.trigger(map, 'resize'), 310);
 });
 
