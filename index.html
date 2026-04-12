@@ -853,6 +853,11 @@
   </div>
 </div>
 
+<a class="btn-open-maps" id="btn-uber" href="#" target="_blank" style="background:#000;">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M14 9l3 3-3 3" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+  Chamar Uber
+</a>
+
 <!-- Tooltip (hover) -->
 <div class="map-tooltip" id="map-tooltip">
   <div class="tooltip-inner">
@@ -1251,6 +1256,19 @@ function calcularRota() {
   document.getElementById('route-dest').textContent = `📍 ${activeBar.nome}`;
   document.getElementById('route-info').style.display = 'block';
   document.getElementById('btn-google-maps').href = gmUrl;
+    // Link Uber
+  let uberUrl;
+  if (userLocation) {
+    uberUrl = `https://m.uber.com/ul/?action=setPickup`
+      + `&pickup[latitude]=${userLocation.lat}&pickup[longitude]=${userLocation.lng}`
+      + `&dropoff[latitude]=${activeBar.lat}&dropoff[longitude]=${activeBar.lng}`
+      + `&dropoff[nickname]=${encodeURIComponent(activeBar.nome)}`;
+  } else {
+    uberUrl = `https://m.uber.com/ul/?action=setPickup&pickup=my_location`
+      + `&dropoff[latitude]=${activeBar.lat}&dropoff[longitude]=${activeBar.lng}`
+      + `&dropoff[nickname]=${encodeURIComponent(activeBar.nome)}`;
+  }
+  document.getElementById('btn-uber').href = uberUrl;
   document.getElementById('route-panel').classList.add('visible');
 }
 
