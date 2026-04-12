@@ -830,7 +830,7 @@
   </div>
   <div id="route-info" style="display:none">
     <div class="route-dest" id="route-dest"></div>
-    <div class="route-stats">
+    <!-- <div class="route-stats">
       <div class="route-stat">
         <div class="val" id="route-dist">–</div>
         <div class="lbl">DISTÂNCIA</div>
@@ -839,7 +839,7 @@
         <div class="val" id="route-time">–</div>
         <div class="lbl">TEMPO</div>
       </div>
-    </div>
+    </div> -->
     <div class="travel-mode-row" id="travel-modes">
       <button class="mode-btn active" data-mode="DRIVING" title="Carro" onclick="trocarModo(this,'DRIVING')">🚗</button>
       <button class="mode-btn" data-mode="WALKING" title="A pé" onclick="trocarModo(this,'WALKING')">🚶</button>
@@ -940,7 +940,7 @@ const BARES = [
 // ═══════════════════════════════════════════════
 //  ESTADO GLOBAL
 // ═══════════════════════════════════════════════
-let map, directionsService, directionsRenderer;
+let map
 let markers = [];
 let activeBar = null;
 let userLocation = null;
@@ -1014,16 +1014,16 @@ window.initMap = function() {
   ]
 });
 
-  directionsService = new google.maps.DirectionsService();
-  directionsRenderer = new google.maps.DirectionsRenderer({
-    map,
-    suppressMarkers: true,
-    polylineOptions: {
-      strokeColor: '#1a5c1a',
-      strokeWeight: 5,
-      strokeOpacity: 0.85
-    }
-  });
+  // directionsService = new google.maps.DirectionsService();
+  // directionsRenderer = new google.maps.DirectionsRenderer({
+  //   map,
+  //   suppressMarkers: true,
+  //   polylineOptions: {
+  //     strokeColor: '#1a5c1a',
+  //     strokeWeight: 5,
+  //     strokeOpacity: 0.85
+  //   }
+  // });
 
   criarMarkers();
   renderizarLista();
@@ -1198,55 +1198,86 @@ function obterLocalizacaoUsuario() {
   }
 }
 
+// function calcularRota() {
+//   if (!activeBar) return;
+
+//   if (!userLocation) {
+//     alert('Por favor, permita o acesso à sua localização para calcular a rota.');
+//     return;
+//   }
+
+//   const origin = userLocation;
+//   const destination = { lat: activeBar.lat, lng: activeBar.lng };
+
+//   directionsService.route({
+//     origin,
+//     destination,
+//     travelMode: google.maps.TravelMode[currentMode],
+//   }, (result, status) => {
+//     if (status === 'OK') {
+//       directionsRenderer.setDirections(result);
+
+//       const leg = result.routes[0].legs[0];
+//       document.getElementById('route-dest').textContent = `📍 ${activeBar.nome}`;
+//       document.getElementById('route-dist').textContent = leg.distance.text;
+//       document.getElementById('route-time').textContent = leg.duration.text;
+//       document.getElementById('route-info').style.display = 'block';
+
+//       // Link Google Maps externo
+//       const modeMap = { DRIVING:'driving', WALKING:'walking', TRANSIT:'transit', BICYCLING:'bicycling' };
+//       const gmUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${destination.lat},${destination.lng}&travelmode=${modeMap[currentMode]}`;
+//       document.getElementById('btn-google-maps').href = gmUrl;
+
+//       document.getElementById('route-panel').classList.add('visible');
+//     } else {
+//       alert('Não foi possível calcular a rota. Tente novamente.');
+//     }
+//   });
+// }
+
 function calcularRota() {
   if (!activeBar) return;
 
-  if (!userLocation) {
-    alert('Por favor, permita o acesso à sua localização para calcular a rota.');
-    return;
+  const modeMap = { DRIVING:'driving', WALKING:'walking', TRANSIT:'transit', BICYCLING:'bicycling' };
+  const destination = `${activeBar.lat},${activeBar.lng}`;
+
+  let gmUrl;
+  if (userLocation) {
+    gmUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${destination}&travelmode=${modeMap[currentMode]}`;
+  } else {
+    gmUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=${modeMap[currentMode]}`;
   }
 
-  const origin = userLocation;
-  const destination = { lat: activeBar.lat, lng: activeBar.lng };
-
-  directionsService.route({
-    origin,
-    destination,
-    travelMode: google.maps.TravelMode[currentMode],
-  }, (result, status) => {
-    if (status === 'OK') {
-      directionsRenderer.setDirections(result);
-
-      const leg = result.routes[0].legs[0];
-      document.getElementById('route-dest').textContent = `📍 ${activeBar.nome}`;
-      document.getElementById('route-dist').textContent = leg.distance.text;
-      document.getElementById('route-time').textContent = leg.duration.text;
-      document.getElementById('route-info').style.display = 'block';
-
-      // Link Google Maps externo
-      const modeMap = { DRIVING:'driving', WALKING:'walking', TRANSIT:'transit', BICYCLING:'bicycling' };
-      const gmUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${destination.lat},${destination.lng}&travelmode=${modeMap[currentMode]}`;
-      document.getElementById('btn-google-maps').href = gmUrl;
-
-      document.getElementById('route-panel').classList.add('visible');
-    } else {
-      alert('Não foi possível calcular a rota. Tente novamente.');
-    }
-  });
+  document.getElementById('route-dest').textContent = `📍 ${activeBar.nome}`;
+  document.getElementById('route-info').style.display = 'block';
+  document.getElementById('btn-google-maps').href = gmUrl;
+  document.getElementById('route-panel').classList.add('visible');
 }
 
 function trocarModo(btn, modo) {
   currentMode = modo;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (activeBar && userLocation) calcularRota();
+  if (activeBar) calcularRota();
 }
 
 function fecharRota() {
-  directionsRenderer.setDirections({ routes: [] });
   document.getElementById('route-panel').classList.remove('visible');
   document.getElementById('route-info').style.display = 'none';
 }
+
+// function trocarModo(btn, modo) {
+//   currentMode = modo;
+//   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+//   btn.classList.add('active');
+//   if (activeBar && userLocation) calcularRota();
+// }
+
+// function fecharRota() {
+//   directionsRenderer.setDirections({ routes: [] });
+//   document.getElementById('route-panel').classList.remove('visible');
+//   document.getElementById('route-info').style.display = 'none';
+// }
 
 // ═══════════════════════════════════════════════
 //  LISTA E FILTROS
