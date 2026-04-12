@@ -539,7 +539,8 @@
       box-shadow: var(--sombra);
       border: 2px solid var(--verde);
       display: none;
-      overflow: hidden;
+      overflow: auto;
+      max-height: calc(100vh - 100px);
     }
 
     #route-panel.visible {
@@ -582,6 +583,7 @@
 
     #route-info {
       padding: 14px 16px;
+      padding-bottom: 12px;
     }
 
     #route-info .route-dest {
@@ -853,7 +855,7 @@
   </div>
 </div>
 
-<a class="btn-open-maps" id="btn-uber" href="#" target="_blank" style="background:#000;">
+<a class="btn-open-maps" id="btn-uber" href="#" target="_blank" style="background:#000;" margin-top:8px;>
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M14 9l3 3-3 3" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
   Chamar Uber
 </a>
