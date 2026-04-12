@@ -773,10 +773,6 @@
   </div>
 </header>
 
-<!-- Sidebar Toggle -->
-<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
-  <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-</button>
 
 <!-- Sidebar -->
 <aside id="sidebar">
@@ -796,6 +792,11 @@
   </div>
   <div class="bar-list" id="bar-list"></div>
 </aside>
+
+<!-- Sidebar Toggle -->
+<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+  <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
 
 <!-- Map -->
 <div id="map"></div>
@@ -980,26 +981,6 @@ window.initMap = function() {
     document.getElementById('api-warning').style.display = 'block';
   }
 
-  // map = new google.maps.Map(document.getElementById('map'), {
-  //   center: { lat: -19.9229, lng: -43.9451 },
-  //   zoom: 12,
-  //   mapId: 'buteco_map',
-  //   disableDefaultUI: false,
-  //   zoomControl: true,
-  //   mapTypeControl: false,
-  //   streetViewControl: false,
-  //   fullscreenControl: true,
-  //   styles: [
-  //     { featureType:"poi", elementType:"labels", stylers:[{visibility:"off"}] },
-  //     { featureType:"transit", elementType:"labels", stylers:[{visibility:"off"}] },
-  //     { featureType:"water", stylers:[{color:"#b8d8e8"}] },
-  //     { featureType:"landscape", stylers:[{color:"#f5f0e8"}] },
-  //     { featureType:"road.highway", elementType:"geometry", stylers:[{color:"#d4c28a"}] },
-  //     { featureType:"road.arterial", elementType:"geometry", stylers:[{color:"#e8dfc0"}] },
-  //     { featureType:"road", elementType:"labels.text.fill", stylers:[{color:"#5a5040"}] },
-  //     { featureType:"administrative.locality", elementType:"labels.text.fill", stylers:[{color:"#1a5c1a"}] },
-  //   ]
-  // });
 
   map = new google.maps.Map(document.getElementById('map'), {
   center: { lat: -19.9229, lng: -43.9451 },
@@ -1021,16 +1002,6 @@ window.initMap = function() {
   ]
 });
 
-  // directionsService = new google.maps.DirectionsService();
-  // directionsRenderer = new google.maps.DirectionsRenderer({
-  //   map,
-  //   suppressMarkers: true,
-  //   polylineOptions: {
-  //     strokeColor: '#1a5c1a',
-  //     strokeWeight: 5,
-  //     strokeOpacity: 0.85
-  //   }
-  // });
 
   criarMarkers();
   renderizarLista();
@@ -1205,42 +1176,6 @@ function obterLocalizacaoUsuario() {
   }
 }
 
-// function calcularRota() {
-//   if (!activeBar) return;
-
-//   if (!userLocation) {
-//     alert('Por favor, permita o acesso à sua localização para calcular a rota.');
-//     return;
-//   }
-
-//   const origin = userLocation;
-//   const destination = { lat: activeBar.lat, lng: activeBar.lng };
-
-//   directionsService.route({
-//     origin,
-//     destination,
-//     travelMode: google.maps.TravelMode[currentMode],
-//   }, (result, status) => {
-//     if (status === 'OK') {
-//       directionsRenderer.setDirections(result);
-
-//       const leg = result.routes[0].legs[0];
-//       document.getElementById('route-dest').textContent = `📍 ${activeBar.nome}`;
-//       document.getElementById('route-dist').textContent = leg.distance.text;
-//       document.getElementById('route-time').textContent = leg.duration.text;
-//       document.getElementById('route-info').style.display = 'block';
-
-//       // Link Google Maps externo
-//       const modeMap = { DRIVING:'driving', WALKING:'walking', TRANSIT:'transit', BICYCLING:'bicycling' };
-//       const gmUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${destination.lat},${destination.lng}&travelmode=${modeMap[currentMode]}`;
-//       document.getElementById('btn-google-maps').href = gmUrl;
-
-//       document.getElementById('route-panel').classList.add('visible');
-//     } else {
-//       alert('Não foi possível calcular a rota. Tente novamente.');
-//     }
-//   });
-// }
 
 function calcularRota() {
   if (!activeBar) return;
@@ -1286,18 +1221,7 @@ function fecharRota() {
   document.getElementById('route-info').style.display = 'none';
 }
 
-// function trocarModo(btn, modo) {
-//   currentMode = modo;
-//   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-//   btn.classList.add('active');
-//   if (activeBar && userLocation) calcularRota();
-// }
 
-// function fecharRota() {
-//   directionsRenderer.setDirections({ routes: [] });
-//   document.getElementById('route-panel').classList.remove('visible');
-//   document.getElementById('route-info').style.display = 'none';
-// }
 
 // ═══════════════════════════════════════════════
 //  LISTA E FILTROS
