@@ -738,6 +738,39 @@
       #header h1 { font-size: 19px; }
       .info-panel-inner { flex-direction: column; gap: 12px; }
     }
+
+    /* Pictures */
+    .info-foto-wrap {
+      width: 220px;
+      min-width: 220px;
+    }
+
+    .info-foto {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid rgba(26,92,26,0.12);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+      background: #eee;
+      display: block;
+    }
+
+    .info-foto.hidden {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      .info-foto-wrap {
+        width: 100%;
+        min-width: 100%;
+      }
+
+      .info-foto {
+        height: 190px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -799,6 +832,9 @@
 <!-- Info Panel -->
 <div id="info-panel">
   <div class="info-panel-inner">
+    <div class="info-foto-wrap">
+      <img id="ip-foto" class="info-foto hidden" src="" alt="Foto do prato" />
+    </div>
     <div class="info-main">
       <div class="info-nome" id="ip-nome"></div>
       <div class="info-bairro" id="ip-bairro"></div>
@@ -881,7 +917,7 @@
 // ═══════════════════════════════════════════════
 const BARES = [
   // ── CENTRO-SUL ──
-  { id: 1, nome: "222", endereco: "Rua Francisco Deslandes, 222 – Cruzeiro", bairro: "Cruzeiro", regiao: "Centro-Sul", prato: "Buraquim Quente", desc: "Minipães recheados com carne de panela e finalizados com queijo canastra e couve crispy", lat: -19.9456568, lng: -43.9297256 },
+  { id: 1, nome: "222", endereco: "Rua Francisco Deslandes, 222 – Cruzeiro", bairro: "Cruzeiro", regiao: "Centro-Sul", prato: "Buraquim Quente", desc: "Minipães recheados com carne de panela e finalizados com queijo canastra e couve crispy", lat: -19.9456568, lng: -43.9297256, foto: "images/222_food.jpg" },
   { id: 2, nome: "Azougue Fogo e Bar", endereco: "Rua do Ouro, 835 – Serra", bairro: "Serra", regiao: "Centro-Sul", prato: "On co tô", desc: "Moelinha de frango escondida sob purê de alho-poró e crispy de cebola", lat: -19.9383697, lng: -43.9201892 },
   { id: 3, nome: "Baiúca", endereco: "Rua Piauí, 1884 – Funcionários", bairro: "Funcionários", regiao: "Centro-Sul", prato: "Pastel Pega no Poró", desc: "Pastel de alho-poró com queijo, acompanhado de farofa de couve, costelinha, gremolata e molho de goiaba", lat: -19.9379851, lng: -43.9287422 },
   { id: 4, nome: "Bar Estabelecimento", endereco: "Rua Monte Alegre, 160 – Serra", bairro: "Serra", regiao: "Centro-Sul", prato: "Com a barriga no fogão", desc: "Barriga de porco de panela cozida, fritas de mandioca e espinafre, farofa de couve e molho", lat: -19.9363238, lng: -43.9238907 },
@@ -1201,6 +1237,18 @@ function selecionarBar(bar, marker) {
   document.getElementById('ip-endereco').textContent = '📍 ' + bar.endereco;
   document.getElementById('ip-prato-nome').textContent = bar.prato;
   document.getElementById('ip-prato-desc').textContent = bar.desc;
+  
+  const ipFoto = document.getElementById("ip-foto");
+
+  if (bar.foto) {
+    ipFoto.src = bar.foto;
+    ipFoto.alt = `Foto do prato ${bar.prato} - ${bar.nome}`;
+    ipFoto.classList.remove("hidden");
+  } else {
+    ipFoto.src = "";
+    ipFoto.alt = "Foto do prato";
+    ipFoto.classList.add("hidden");
+  }
 
   document.getElementById('info-panel').classList.add('open');
 
