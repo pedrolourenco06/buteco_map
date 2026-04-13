@@ -799,6 +799,11 @@
     <div class="badge">26ª EDIÇÃO</div>
     <div class="count-badge"><strong id="visible-count">58</strong> botecos</div>
   </div>
+  <div id="auth-box" style="display:flex; gap:8px; align-items:center;">
+    <button id="login-btn">Entrar com Google</button>
+    <button id="logout-btn" style="display:none;">Sair</button>
+    <span id="user-name" style="color:white;"></span>
+  </div>
 </header>
 
 
@@ -850,6 +855,9 @@
       <button class="btn-rota" id="btn-rota" onclick="calcularRota()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12h18M13 6l6 6-6 6"/></svg>
         Traçar Rota
+      </button>
+      <button class="btn-rota" id="btn-checkin" type="button" style="background:#e8591a;">
+        ✅ Marcar como visitado
       </button>
       <button class="btn-fechar" onclick="fecharInfoPanel()">✕ Fechar</button>
     </div>
@@ -1250,6 +1258,10 @@ function selecionarBar(bar, marker) {
   }
 
   document.getElementById('info-panel').classList.add('open');
+  window.activeBar = bar;
+  if (window.atualizarChecklistVisual) {
+    window.atualizarChecklistVisual();
+  }
 
   // Sidebar highlight
   document.querySelectorAll('.bar-item').forEach(el => el.classList.remove('selected'));
@@ -1370,7 +1382,7 @@ function renderizarLista() {
   document.getElementById('visible-count').textContent = filteredBares.length;
 
   list.innerHTML = filteredBares.map(b => `
-    <div class="bar-item" data-id="${b.id}" onclick="clicouNaLista(${b.id})">
+     <div class="bar-item" data-id="${b.id}" data-bar-id="${b.id}" onclick="clicouNaLista(${b.id})">
       <div class="bar-item-name">${b.nome}</div>
       <div class="bar-item-prato">${b.prato} — ${b.desc}</div>
       <div class="bar-item-meta">
@@ -1441,3 +1453,146 @@ function esconderLoading() {
 
 </body>
 </html>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCRKIYPAxmJRuz9SGhgeoyM69LKtxpKesw",
+    authDomain: "buteco-map.firebaseapp.com",
+    projectId: "buteco-map",
+    storageBucket: "buteco-map.firebasestorage.app",
+    messagingSenderId: "328577355632",
+    appId: "1:328577355632:web:ff98cba450caa08fd889b5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  let currentUser = null;
+  let visitedMap = {};
+  let unsubscribeUserDoc = null;
+
+  const loginBtn = document.getElementById("login-btn");
+  const logoutBtn = document.getElementById("logout-btn");
+  const userNameEl = document.getElementById("user-name");
+  const checkinBtn = document.getElementById("btn-checkin");
+
+  loginBtn.addEventListener("click", async () => {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (err) {
+      console.error("Erro no login:", err);
+      alert("Não foi possível entrar com Google.");
+    }
+  });
+
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Erro ao sair:", err);
+    }
+  });
+
+  onAuthStateChanged(auth, async (user) => {
+    currentUser = user || null;
+
+    if (unsubscribeUserDoc) {
+      unsubscribeUserDoc();
+      unsubscribeUserDoc = null;
+    }
+
+    if (!user) {
+      visitedMap = {};
+      loginBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+      userNameEl.textContent = "";
+      atualizarChecklistVisual();
+      return;
+    }
+
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+    userNameEl.textContent = user.displayName || user.email || "Usuário";
+
+    const userRef = doc(db, "users", user.uid);
+
+    await setDoc(userRef, {
+      displayName: user.displayName || "",
+      email: user.email || "",
+      photoURL: user.photoURL || "",
+      visited: {}
+    }, { merge: true });
+
+    unsubscribeUserDoc = onSnapshot(userRef, (snap) => {
+      const data = snap.data() || {};
+      visitedMap = data.visited || {};
+      atualizarChecklistVisual();
+    });
+  });
+
+  async function toggleVisited(barId) {
+    if (!currentUser) {
+      alert("Entre com Google para salvar seu checklist.");
+      return;
+    }
+
+    const userRef = doc(db, "users", currentUser.uid);
+    const fieldPath = `visited.${String(barId)}`;
+    const isVisited = !!visitedMap[String(barId)];
+
+    try {
+      await updateDoc(userRef, {
+        [fieldPath]: !isVisited
+      });
+    } catch (err) {
+      console.error("Erro ao atualizar checklist:", err);
+      alert("Não foi possível atualizar o checklist.");
+    }
+  }
+
+  function atualizarChecklistVisual() {
+    if (!window.BARES) return;
+
+    document.querySelectorAll(".bar-item").forEach((el) => {
+      const id = el.dataset.barId;
+      if (visitedMap[id]) {
+        el.style.borderLeft = "5px solid #1a5c1a";
+        el.style.opacity = "0.85";
+      } else {
+        el.style.borderLeft = "none";
+        el.style.opacity = "1";
+      }
+    });
+
+    if (window.activeBar && checkinBtn) {
+      const isVisited = !!visitedMap[String(window.activeBar.id)];
+      checkinBtn.textContent = isVisited ? "↩️ Desmarcar visita" : "✅ Marcar como visitado";
+    }
+  }
+
+  checkinBtn?.addEventListener("click", async () => {
+    if (!window.activeBar) return;
+    await toggleVisited(window.activeBar.id);
+  });
+
+  window.atualizarChecklistVisual = atualizarChecklistVisual;
+</script>
