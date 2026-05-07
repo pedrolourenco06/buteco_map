@@ -1412,6 +1412,24 @@ document.getElementById('search-input').addEventListener('input', e => {
 });
 
 // Sidebar toggle
+if (window.innerWidth <= 700) {
+  const sidebar = document.getElementById('sidebar');
+  const toggle  = document.getElementById('sidebar-toggle');
+  sidebar.classList.add('collapsed');
+  toggle.style.left = '0px';
+}
+
+// Reabre sidebar ao voltar para desktop (ex: rotacionar tela)
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 700) {
+    const sidebar = document.getElementById('sidebar');
+    const toggle  = document.getElementById('sidebar-toggle');
+    sidebar.classList.remove('collapsed');
+    toggle.style.left = '340px';
+    toggle.querySelector('svg').style.transform = 'rotate(0deg)';
+  }
+});
+
 document.getElementById('sidebar-toggle').addEventListener('click', () => {
   const sidebar = document.getElementById('sidebar');
   const toggle = document.getElementById('sidebar-toggle');
